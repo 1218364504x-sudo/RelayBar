@@ -1,0 +1,39 @@
+# Xcode
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
+xcuserdata/
+DerivedData/
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+
+# macOS
+.DS_Store
+*.swp
+*.lock
+
+# Build
+/build/
+build/
+/Packages/
+/dist/
+*.app
+*.zip
+
+# Local secrets and machine config
+.env
+.env.*
+!.env.example
+*.xcconfig
+*.local
+*.local.json
+*.local.plist
+local.config
+local_config.*
+test-keys.*
+test_keys.*
+secrets.*

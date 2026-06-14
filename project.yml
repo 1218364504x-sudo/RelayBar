@@ -1,0 +1,108 @@
+name: CostBar-kx
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "2"
+
+targets:
+  CostBar-kx:
+    type: application
+    platform: macOS
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: RelayBar
+        RelayBarAppGroupIdentifier: $(RELAYBAR_APP_GROUP)
+        LSUIElement: true
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    entitlements:
+      path: CostBar-kx.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.temporary-exception.files.home-relative-path.read-only:
+          - /.cc-switch/
+        com.apple.security.personal-information.keychain: true
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)com.example.RelayBar
+        com.apple.security.application-groups:
+          - $(RELAYBAR_APP_GROUP)
+    sources:
+      - path: CostBar-kxApp.swift
+      - path: Views
+      - path: ViewModels
+      - path: Models
+      - path: Services
+      - path: Storage
+      - path: Utils
+      - path: Support
+      - path: Shared
+      - path: Assets.xcassets
+    settings:
+      base:
+        INFOPLIST_FILE: Info.plist
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        DEVELOPMENT_TEAM: YOURTEAMID
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.RelayBar
+        RELAYBAR_APP_GROUP: YOURTEAMID.com.example.relaybar.widget
+        ENABLE_HARDENED_RUNTIME: true
+    dependencies:
+      - target: PixelAPIWidget
+        embed: true
+
+  PixelAPIWidget:
+    type: app-extension
+    platform: macOS
+    info:
+      path: PixelAPIWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        RelayBarAppGroupIdentifier: $(RELAYBAR_APP_GROUP)
+    entitlements:
+      path: PixelAPIWidget/PixelAPIWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups:
+          - $(RELAYBAR_APP_GROUP)
+    sources:
+      - path: PixelAPIWidget
+      - path: Shared
+    settings:
+      base:
+        INFOPLIST_FILE: PixelAPIWidget/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        DEVELOPMENT_TEAM: YOURTEAMID
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.RelayBar.Widget
+        RELAYBAR_APP_GROUP: YOURTEAMID.com.example.relaybar.widget
+        PRODUCT_NAME: PixelAPIWidget
+        SKIP_INSTALL: YES
+        ENABLE_HARDENED_RUNTIME: true
+
+  CostBar-kxTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: kxTests
+        type: group
+    dependencies:
+      - target: CostBar-kx
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        DEVELOPMENT_TEAM: YOURTEAMID
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CostBar-kx.app/Contents/MacOS/CostBar-kx"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        GENERATE_INFOPLIST_FILE: YES

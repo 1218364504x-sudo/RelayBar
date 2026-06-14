@@ -1,0 +1,753 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10665DD1F39BD6A700FDD4C2 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBF58AF8FF440F332FF84DE /* DateFormatters.swift */; };
+		ABCDEF000000000000000001 /* PixelDashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF000000000000000006 /* PixelDashboardSnapshot.swift */; };
+		ABCDEF000000000000000002 /* PixelDashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF000000000000000006 /* PixelDashboardSnapshot.swift */; };
+		ABCDEF000000000000000003 /* PixelAPIWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF000000000000000007 /* PixelAPIWidget.swift */; };
+		ABCDEF000000000000000004 /* PixelAPIWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF000000000000000008 /* PixelAPIWidgetBundle.swift */; };
+		ABCDEF000000000000000005 /* PixelAPIWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ABCDEF00000000000000000B /* PixelAPIWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		20A323F4C134BD553D533A09 /* FloatingBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228C01617F97FC3AE262061B /* FloatingBalanceView.swift */; };
+		2C4E3F42A7D5CEB5C88963A9 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640C1089186DCC1DA7E5D6EC /* DashboardViewModel.swift */; };
+		34838B9A8A15A145715F9521 /* ProviderConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4457FE926C8344BFED9EAAA /* ProviderConfig.swift */; };
+		35433D38621EB73CA854B149 /* LocalCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E2437D938FAA3B1D035939 /* LocalCacheTests.swift */; };
+		3F1A345A713734559B600ADF /* OpenAIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135F305CB299185B2FC103C6 /* OpenAIServiceTests.swift */; };
+		461DADBDD3CDDAFFA9DE0263 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D114B739CAE54DEAF9622D0 /* Assets.xcassets */; };
+		4EF5AD70A1EAEFF4866EE67E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5830E092554A5178DC16D99F /* SettingsView.swift */; };
+		50C1ED7BF34976B32C08ECDE /* CostBar-kxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740593328FC183F661D5C60D /* CostBar-kxApp.swift */; };
+		5F01E9C6E7F5EF8E5C12105A /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1FA2372A69B50FD909FA77 /* OpenAIService.swift */; };
+		649E81E483965DF31DB20CD6 /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0747CC07DB2CDD09B10391F /* LocalCache.swift */; };
+		CC5A17C00100000000000001 /* CCSwitchIntegrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5A17C00100000000000002 /* CCSwitchIntegrationService.swift */; };
+		68086619436A202E8D846766 /* DeepSeekServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4083A1211E92E8EE8DA4BBC2 /* DeepSeekServiceTests.swift */; };
+		6CF2471A6E7951988DF36A39 /* UsageRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5699008CBA789BF33963F02 /* UsageRecord.swift */; };
+		6D6185371C18817891E968AC /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7458B993A6082664836C58 /* DeepSeekService.swift */; };
+		7165445F187E684A60EB25FD /* UsageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C659C42B91B1F528463A8DE4 /* UsageServiceProtocol.swift */; };
+		7755643D697F014B77F48C84 /* UsageChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B33B068E0F3871DB3995D7E /* UsageChartView.swift */; };
+		89F9E1F7E03EC31DF3E0C3C4 /* ProviderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB416E30C92091BC5F9DA66 /* ProviderRowView.swift */; };
+		8C3886A0C811CE7FE3FF5F58 /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF02F398CA28BC3D3EC2BD /* KeychainStorage.swift */; };
+		9BD9B5091922613E077BED78 /* KeychainStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C523290340771B0DD9EFF8 /* KeychainStorageTests.swift */; };
+		9D624B26655DE1DE8E451A7D /* MenuBarPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9FCB0EB5E6495883071F97 /* MenuBarPopover.swift */; };
+		9DE4B5A50E0A35B08EBF8C06 /* FloatingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FF52E69FA984D5CDE16AA5 /* FloatingPanelController.swift */; };
+		B02393793F3BC5A3D66084F3 /* ExchangeRateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F022FF5BAC70745C01A4804A /* ExchangeRateService.swift */; };
+		BCDE2F38DF57FC7ABCE0EE74 /* UsageServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062515279492813C2906E438 /* UsageServiceFactory.swift */; };
+		CD517A1716441EA234FD2F19 /* BalanceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518766B6B43A0853FEB1CF8D /* BalanceRecord.swift */; };
+		D090677E282BC31A8DB657F5 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8116DFA22FB925AD435AFDA8 /* SettingsViewModel.swift */; };
+		DCD3A0FF0025B96AA0D19344 /* AnthropicService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B306AAFC31D01E0D200E2A8F /* AnthropicService.swift */; };
+		F3F0F9340E7F2F78709F4B6D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC53DE52453CB81DBC9B939 /* Constants.swift */; };
+		FC5D770187BD40F4C8A8BB01 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5C1F922188528E0F488341 /* APIError.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9D079F445F11277D29563AAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FC40575512EDB0561FA1756D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E49FA352C61BD0DC3BAD420;
+			remoteInfo = "CostBar-kx";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ABCDEF00000000000000000E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				ABCDEF000000000000000005 /* PixelAPIWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		062515279492813C2906E438 /* UsageServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageServiceFactory.swift; sourceTree = "<group>"; };
+		0D114B739CAE54DEAF9622D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ABCDEF000000000000000006 /* PixelDashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelDashboardSnapshot.swift; sourceTree = "<group>"; };
+		ABCDEF000000000000000007 /* PixelAPIWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelAPIWidget.swift; sourceTree = "<group>"; };
+		ABCDEF000000000000000008 /* PixelAPIWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelAPIWidgetBundle.swift; sourceTree = "<group>"; };
+		ABCDEF000000000000000009 /* PixelAPIWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PixelAPIWidget.entitlements; sourceTree = "<group>"; };
+		ABCDEF00000000000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ABCDEF00000000000000000B /* PixelAPIWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PixelAPIWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		135F305CB299185B2FC103C6 /* OpenAIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIServiceTests.swift; sourceTree = "<group>"; };
+		18FF52E69FA984D5CDE16AA5 /* FloatingPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanelController.swift; sourceTree = "<group>"; };
+		228C01617F97FC3AE262061B /* FloatingBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBalanceView.swift; sourceTree = "<group>"; };
+		2A9FCB0EB5E6495883071F97 /* MenuBarPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarPopover.swift; sourceTree = "<group>"; };
+		4083A1211E92E8EE8DA4BBC2 /* DeepSeekServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekServiceTests.swift; sourceTree = "<group>"; };
+		4AC53DE52453CB81DBC9B939 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4B33B068E0F3871DB3995D7E /* UsageChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageChartView.swift; sourceTree = "<group>"; };
+		4DFF02F398CA28BC3D3EC2BD /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
+		518766B6B43A0853FEB1CF8D /* BalanceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceRecord.swift; sourceTree = "<group>"; };
+		5830E092554A5178DC16D99F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		640C1089186DCC1DA7E5D6EC /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		6C7458B993A6082664836C58 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
+		740593328FC183F661D5C60D /* CostBar-kxApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CostBar-kxApp.swift"; sourceTree = "<group>"; };
+		8116DFA22FB925AD435AFDA8 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		89F91E9FBF679EDA1359AC5F /* CostBar-kxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CostBar-kxTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DB416E30C92091BC5F9DA66 /* ProviderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowView.swift; sourceTree = "<group>"; };
+		9D5C1F922188528E0F488341 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		ABBF58AF8FF440F332FF84DE /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
+		B0747CC07DB2CDD09B10391F /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
+		B306AAFC31D01E0D200E2A8F /* AnthropicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnthropicService.swift; sourceTree = "<group>"; };
+		B4457FE926C8344BFED9EAAA /* ProviderConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderConfig.swift; sourceTree = "<group>"; };
+		B5699008CBA789BF33963F02 /* UsageRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRecord.swift; sourceTree = "<group>"; };
+		BA1FA2372A69B50FD909FA77 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		C2E2437D938FAA3B1D035939 /* LocalCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCacheTests.swift; sourceTree = "<group>"; };
+		C659C42B91B1F528463A8DE4 /* UsageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageServiceProtocol.swift; sourceTree = "<group>"; };
+		CC5A17C00100000000000002 /* CCSwitchIntegrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCSwitchIntegrationService.swift; sourceTree = "<group>"; };
+		D73D09BE3F6A93AF4028E886 /* CostBar-kx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CostBar-kx.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7C523290340771B0DD9EFF8 /* KeychainStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorageTests.swift; sourceTree = "<group>"; };
+		F022FF5BAC70745C01A4804A /* ExchangeRateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A05D9E6959B022AE8F525FE = {
+			isa = PBXGroup;
+			children = (
+				0D114B739CAE54DEAF9622D0 /* Assets.xcassets */,
+				740593328FC183F661D5C60D /* CostBar-kxApp.swift */,
+				57635F64FCFB28C658EFE509 /* kxTests */,
+				90D2CB52108148906ABD9323 /* Models */,
+				ABCDEF00000000000000000C /* PixelAPIWidget */,
+				8E08D9649BBEFEF3884235F1 /* Services */,
+				ABCDEF00000000000000000D /* Shared */,
+				BAD9266CD9E3B4AB556D1E03 /* Storage */,
+				3A64C050C6ADBC08E81E1FFD /* Support */,
+				6E5025D881D0F75E89D1B463 /* Utils */,
+				59FA3A6C5B6BF57F5BEF91CA /* ViewModels */,
+				67D0C7C474C8D91590593D5B /* Views */,
+				1FE233B8B941D421E0509E7F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1FE233B8B941D421E0509E7F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D73D09BE3F6A93AF4028E886 /* CostBar-kx.app */,
+				ABCDEF00000000000000000B /* PixelAPIWidget.appex */,
+				89F91E9FBF679EDA1359AC5F /* CostBar-kxTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3A64C050C6ADBC08E81E1FFD /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				18FF52E69FA984D5CDE16AA5 /* FloatingPanelController.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		ABCDEF00000000000000000C /* PixelAPIWidget */ = {
+			isa = PBXGroup;
+			children = (
+				ABCDEF00000000000000000A /* Info.plist */,
+				ABCDEF000000000000000009 /* PixelAPIWidget.entitlements */,
+				ABCDEF000000000000000007 /* PixelAPIWidget.swift */,
+				ABCDEF000000000000000008 /* PixelAPIWidgetBundle.swift */,
+			);
+			path = PixelAPIWidget;
+			sourceTree = "<group>";
+		};
+		ABCDEF00000000000000000D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				ABCDEF000000000000000006 /* PixelDashboardSnapshot.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		57635F64FCFB28C658EFE509 /* kxTests */ = {
+			isa = PBXGroup;
+			children = (
+				4083A1211E92E8EE8DA4BBC2 /* DeepSeekServiceTests.swift */,
+				D7C523290340771B0DD9EFF8 /* KeychainStorageTests.swift */,
+				C2E2437D938FAA3B1D035939 /* LocalCacheTests.swift */,
+				135F305CB299185B2FC103C6 /* OpenAIServiceTests.swift */,
+			);
+			path = kxTests;
+			sourceTree = "<group>";
+		};
+		59FA3A6C5B6BF57F5BEF91CA /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				640C1089186DCC1DA7E5D6EC /* DashboardViewModel.swift */,
+				8116DFA22FB925AD435AFDA8 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		67D0C7C474C8D91590593D5B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				228C01617F97FC3AE262061B /* FloatingBalanceView.swift */,
+				2A9FCB0EB5E6495883071F97 /* MenuBarPopover.swift */,
+				8DB416E30C92091BC5F9DA66 /* ProviderRowView.swift */,
+				5830E092554A5178DC16D99F /* SettingsView.swift */,
+				4B33B068E0F3871DB3995D7E /* UsageChartView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6E5025D881D0F75E89D1B463 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				9D5C1F922188528E0F488341 /* APIError.swift */,
+				4AC53DE52453CB81DBC9B939 /* Constants.swift */,
+				ABBF58AF8FF440F332FF84DE /* DateFormatters.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		8E08D9649BBEFEF3884235F1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B306AAFC31D01E0D200E2A8F /* AnthropicService.swift */,
+				CC5A17C00100000000000002 /* CCSwitchIntegrationService.swift */,
+				6C7458B993A6082664836C58 /* DeepSeekService.swift */,
+				F022FF5BAC70745C01A4804A /* ExchangeRateService.swift */,
+				BA1FA2372A69B50FD909FA77 /* OpenAIService.swift */,
+				062515279492813C2906E438 /* UsageServiceFactory.swift */,
+				C659C42B91B1F528463A8DE4 /* UsageServiceProtocol.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		90D2CB52108148906ABD9323 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				518766B6B43A0853FEB1CF8D /* BalanceRecord.swift */,
+				B4457FE926C8344BFED9EAAA /* ProviderConfig.swift */,
+				B5699008CBA789BF33963F02 /* UsageRecord.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BAD9266CD9E3B4AB556D1E03 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				4DFF02F398CA28BC3D3EC2BD /* KeychainStorage.swift */,
+				B0747CC07DB2CDD09B10391F /* LocalCache.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E49FA352C61BD0DC3BAD420 /* CostBar-kx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1577FDC29036B196DAC7DCF7 /* Build configuration list for PBXNativeTarget "CostBar-kx" */;
+			buildPhases = (
+				6EC90EDABE313C7EDCD4B9DF /* Sources */,
+				DAF6F2EF1ABE611784F1C3B0 /* Resources */,
+				ABCDEF00000000000000000E /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ABCDEF00000000000000000F /* PBXTargetDependency */,
+			);
+			name = "CostBar-kx";
+			packageProductDependencies = (
+			);
+			productName = "CostBar-kx";
+			productReference = D73D09BE3F6A93AF4028E886 /* CostBar-kx.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AA555FBC157D861025CEFC2A /* CostBar-kxTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F9127BBEF4A58CF9819EE115 /* Build configuration list for PBXNativeTarget "CostBar-kxTests" */;
+			buildPhases = (
+				EDC6752FFAEEE3AA16F5B339 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0E4D474458622646F939B25C /* PBXTargetDependency */,
+			);
+			name = "CostBar-kxTests";
+			packageProductDependencies = (
+			);
+			productName = "CostBar-kxTests";
+			productReference = 89F91E9FBF679EDA1359AC5F /* CostBar-kxTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ABCDEF000000000000000010 /* PixelAPIWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ABCDEF000000000000000011 /* Build configuration list for PBXNativeTarget "PixelAPIWidget" */;
+			buildPhases = (
+				ABCDEF000000000000000012 /* Sources */,
+				ABCDEF000000000000000013 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PixelAPIWidget;
+			packageProductDependencies = (
+			);
+			productName = PixelAPIWidget;
+			productReference = ABCDEF00000000000000000B /* PixelAPIWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FC40575512EDB0561FA1756D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					0E49FA352C61BD0DC3BAD420 = {
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+								com.apple.ApplicationGroups.Mac = {
+								enabled = 1;
+							};
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
+					ABCDEF000000000000000010 = {
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+								com.apple.ApplicationGroups.Mac = {
+								enabled = 1;
+							};
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 45A4397C7F2A8ECF0DEF9479 /* Build configuration list for PBXProject "CostBar-kx" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 0A05D9E6959B022AE8F525FE;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1FE233B8B941D421E0509E7F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E49FA352C61BD0DC3BAD420 /* CostBar-kx */,
+				ABCDEF000000000000000010 /* PixelAPIWidget */,
+				AA555FBC157D861025CEFC2A /* CostBar-kxTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DAF6F2EF1ABE611784F1C3B0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				461DADBDD3CDDAFFA9DE0263 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ABCDEF000000000000000013 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6EC90EDABE313C7EDCD4B9DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC5D770187BD40F4C8A8BB01 /* APIError.swift in Sources */,
+				DCD3A0FF0025B96AA0D19344 /* AnthropicService.swift in Sources */,
+				CD517A1716441EA234FD2F19 /* BalanceRecord.swift in Sources */,
+				F3F0F9340E7F2F78709F4B6D /* Constants.swift in Sources */,
+				50C1ED7BF34976B32C08ECDE /* CostBar-kxApp.swift in Sources */,
+				2C4E3F42A7D5CEB5C88963A9 /* DashboardViewModel.swift in Sources */,
+				10665DD1F39BD6A700FDD4C2 /* DateFormatters.swift in Sources */,
+				6D6185371C18817891E968AC /* DeepSeekService.swift in Sources */,
+				B02393793F3BC5A3D66084F3 /* ExchangeRateService.swift in Sources */,
+				20A323F4C134BD553D533A09 /* FloatingBalanceView.swift in Sources */,
+				9DE4B5A50E0A35B08EBF8C06 /* FloatingPanelController.swift in Sources */,
+				8C3886A0C811CE7FE3FF5F58 /* KeychainStorage.swift in Sources */,
+				649E81E483965DF31DB20CD6 /* LocalCache.swift in Sources */,
+				9D624B26655DE1DE8E451A7D /* MenuBarPopover.swift in Sources */,
+				5F01E9C6E7F5EF8E5C12105A /* OpenAIService.swift in Sources */,
+				ABCDEF000000000000000001 /* PixelDashboardSnapshot.swift in Sources */,
+				CC5A17C00100000000000001 /* CCSwitchIntegrationService.swift in Sources */,
+				34838B9A8A15A145715F9521 /* ProviderConfig.swift in Sources */,
+				89F9E1F7E03EC31DF3E0C3C4 /* ProviderRowView.swift in Sources */,
+				4EF5AD70A1EAEFF4866EE67E /* SettingsView.swift in Sources */,
+				D090677E282BC31A8DB657F5 /* SettingsViewModel.swift in Sources */,
+				7755643D697F014B77F48C84 /* UsageChartView.swift in Sources */,
+				6CF2471A6E7951988DF36A39 /* UsageRecord.swift in Sources */,
+				BCDE2F38DF57FC7ABCE0EE74 /* UsageServiceFactory.swift in Sources */,
+				7165445F187E684A60EB25FD /* UsageServiceProtocol.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDC6752FFAEEE3AA16F5B339 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68086619436A202E8D846766 /* DeepSeekServiceTests.swift in Sources */,
+				9BD9B5091922613E077BED78 /* KeychainStorageTests.swift in Sources */,
+				35433D38621EB73CA854B149 /* LocalCacheTests.swift in Sources */,
+				3F1A345A713734559B600ADF /* OpenAIServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ABCDEF000000000000000012 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABCDEF000000000000000003 /* PixelAPIWidget.swift in Sources */,
+				ABCDEF000000000000000004 /* PixelAPIWidgetBundle.swift in Sources */,
+				ABCDEF000000000000000002 /* PixelDashboardSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0E4D474458622646F939B25C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0E49FA352C61BD0DC3BAD420 /* CostBar-kx */;
+			targetProxy = 9D079F445F11277D29563AAD /* PBXContainerItemProxy */;
+		};
+		ABCDEF00000000000000000F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABCDEF000000000000000010 /* PixelAPIWidget */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DE4B3CF261DBF802AFE470D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "CostBar-kx.entitlements";
+					CODE_SIGN_IDENTITY = "Apple Development";
+					CODE_SIGN_STYLE = Automatic;
+					COMBINE_HIDPI_IMAGES = YES;
+					DEVELOPMENT_TEAM = YOURTEAMID;
+					ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBar;
+				RELAYBAR_APP_GROUP = YOURTEAMID.com.example.relaybar.widget;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		29A6EDC41C43BDDB84999F30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YOURTEAMID;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBarTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CostBar-kx.app/Contents/MacOS/CostBar-kx";
+			};
+			name = Release;
+		};
+		57EB0CD47A9E696C84C8FB13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 2;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		778618C954A3CC4CF8916988 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "CostBar-kx.entitlements";
+					CODE_SIGN_IDENTITY = "Apple Development";
+					CODE_SIGN_STYLE = Automatic;
+					COMBINE_HIDPI_IMAGES = YES;
+					DEVELOPMENT_TEAM = YOURTEAMID;
+					ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBar;
+				RELAYBAR_APP_GROUP = YOURTEAMID.com.example.relaybar.widget;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		ABCDEF000000000000000014 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "PixelAPIWidget/PixelAPIWidget.entitlements";
+					CODE_SIGN_IDENTITY = "Apple Development";
+					CODE_SIGN_STYLE = Automatic;
+					COMBINE_HIDPI_IMAGES = YES;
+					CURRENT_PROJECT_VERSION = 2;
+					DEVELOPMENT_TEAM = YOURTEAMID;
+					ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PixelAPIWidget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBar.Widget;
+				PRODUCT_NAME = PixelAPIWidget;
+				RELAYBAR_APP_GROUP = YOURTEAMID.com.example.relaybar.widget;
+				PRODUCT_BUNDLE_PACKAGE_TYPE = "XPC!";
+				WRAPPER_EXTENSION = appex;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		ABCDEF000000000000000015 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "PixelAPIWidget/PixelAPIWidget.entitlements";
+					CODE_SIGN_IDENTITY = "Apple Development";
+					CODE_SIGN_STYLE = Automatic;
+					COMBINE_HIDPI_IMAGES = YES;
+					CURRENT_PROJECT_VERSION = 2;
+					DEVELOPMENT_TEAM = YOURTEAMID;
+					ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PixelAPIWidget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBar.Widget;
+				PRODUCT_NAME = PixelAPIWidget;
+				RELAYBAR_APP_GROUP = YOURTEAMID.com.example.relaybar.widget;
+				PRODUCT_BUNDLE_PACKAGE_TYPE = "XPC!";
+				WRAPPER_EXTENSION = appex;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		AA9E2ABC27669232C202D328 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 2;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		DD9A50574D76F7CDD9B9EE2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YOURTEAMID;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.RelayBarTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CostBar-kx.app/Contents/MacOS/CostBar-kx";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1577FDC29036B196DAC7DCF7 /* Build configuration list for PBXNativeTarget "CostBar-kx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DE4B3CF261DBF802AFE470D /* Debug */,
+				778618C954A3CC4CF8916988 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		45A4397C7F2A8ECF0DEF9479 /* Build configuration list for PBXProject "CostBar-kx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA9E2ABC27669232C202D328 /* Debug */,
+				57EB0CD47A9E696C84C8FB13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ABCDEF000000000000000011 /* Build configuration list for PBXNativeTarget "PixelAPIWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABCDEF000000000000000014 /* Debug */,
+				ABCDEF000000000000000015 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F9127BBEF4A58CF9819EE115 /* Build configuration list for PBXNativeTarget "CostBar-kxTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD9A50574D76F7CDD9B9EE2C /* Debug */,
+				29A6EDC41C43BDDB84999F30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FC40575512EDB0561FA1756D /* Project object */;
+}
