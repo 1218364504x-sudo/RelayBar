@@ -1,79 +1,87 @@
 # RelayBar
 
-RelayBar is a native macOS menu bar app with a floating window and WidgetKit desktop widgets for monitoring API relay provider balances and usage.
+RelayBar 是一个 macOS 原生菜单栏应用，带悬浮窗和 WidgetKit 桌面小组件，用来查看多个 API 中转站 / New API / One API / Sub2API 兼容站点的余额和用量。
 
-The user-facing metrics are:
+当前界面主要展示这几类指标：
 
 - 余额
 - 今日消费
 - 今日 Token
 - 累计 Token
 
-The original Xcode target and scheme names are still `CostBar-kx` to keep the project history stable.
+项目早期名称是 `CostBar-kx`，为了减少工程改动，Xcode target、scheme 和部分目录名仍保留原名；用户可见的应用名是 RelayBar。
 
-## Features
+## 功能
 
-- Menu bar status and detail popover
-- Multiple provider profiles with independent credentials
-- New API / One API / Sub2API-style balance and usage compatibility
-- Optional CC Switch current-provider following
-- Optional floating balance window
-- WidgetKit widgets in Small, Medium, and Large sizes
-- Sanitized App Group cache shared from the main app to the widget
-- macOS Keychain storage for credentials
+- 菜单栏状态显示和详情弹窗
+- 多配置档管理，每个配置档独立保存凭证
+- 兼容 New API / One API / Sub2API 风格的余额和用量接口
+- 支持跟随 CC Switch 当前供应商
+- 支持可选悬浮窗
+- 支持 Small、Medium、Large 三种 WidgetKit 小组件
+- 主 App 将脱敏快照写入 App Group，小组件仅读取缓存
+- API Key 只保存在 macOS Keychain
 
-## Architecture
+## 架构
 
 ```text
-Main App
-  ├─ reads credentials from Keychain
-  ├─ refreshes selected provider data
-  ├─ writes sanitized PixelDashboardSnapshot to App Group
-  └─ reloads WidgetKit timelines
+主 App
+  ├─ 从 Keychain 读取凭证
+  ├─ 刷新当前配置档的数据
+  ├─ 将脱敏后的 PixelDashboardSnapshot 写入 App Group
+  └─ 通知 WidgetKit 刷新时间线
 
-Widget Extension
-  └─ reads only the App Group snapshot cache
+Widget 扩展
+  └─ 只读取 App Group 中的快照缓存
 ```
 
-Important files:
+重要文件：
 
-- `Shared/PixelDashboardSnapshot.swift`: shared snapshot model and App Group cache store
-- `ViewModels/DashboardViewModel.swift`: refresh, profile, CC Switch, and widget publishing orchestration
-- `Services/UsageServiceFactory.swift`: Pixel/New API/Sub2API-compatible dashboard fetching
-- `Services/CCSwitchIntegrationService.swift`: optional CC Switch local database integration
-- `PixelAPIWidget/PixelAPIWidget.swift`: WidgetKit UI
+- `Shared/PixelDashboardSnapshot.swift`：主 App 和 Widget 共享的快照模型、App Group 缓存读写
+- `ViewModels/DashboardViewModel.swift`：刷新、配置档、CC Switch 跟随、Widget 发布的主流程
+- `Services/UsageServiceFactory.swift`：Pixel / New API / Sub2API 兼容数据拉取
+- `Services/CCSwitchIntegrationService.swift`：可选的 CC Switch 本地数据库读取
+- `PixelAPIWidget/PixelAPIWidget.swift`：WidgetKit 小组件界面
 
-## Security Model
+## 安全设计
 
-- API keys are saved only in macOS Keychain.
-- API keys are not written to UserDefaults, JSON cache, plist files, README examples, or logs.
-- The widget does not read Keychain.
-- The widget does not make network requests.
-- The widget does not read CC Switch.
-- The widget reads only the sanitized App Group cache written by the main app.
-- App Group cache files must never include `Authorization`, `Bearer`, `Cookie`, or raw credentials.
+- API Key 只保存到 macOS Keychain
+- API Key 不写入 UserDefaults、JSON 缓存、plist、README 示例或日志
+- Widget 不读取 Keychain
+- Widget 不发起网络请求
+- Widget 不读取 CC Switch
+- Widget 只读取主 App 写入 App Group 的脱敏缓存
+- App Group 缓存不得包含 `Authorization`、`Bearer`、`Cookie` 或任何原始凭证
 
-## Requirements
+## 环境要求
 
-- macOS 14 or newer
-- Xcode 16 or newer
-- Apple development team for running the WidgetKit extension with App Groups
+- macOS 14 或更新版本
+- Xcode 16 或更新版本
+- 如需运行 WidgetKit 和 App Group，需要 Apple Developer Team
 
-## Open Source Setup
+## 开源项目配置
 
-Before building your fork, update signing values for both targets:
+克隆或 fork 后，请先修改主 App 和 Widget 两个 target 的签名配置：
 
 - `DEVELOPMENT_TEAM`
 - `PRODUCT_BUNDLE_IDENTIFIER`
 - `RELAYBAR_APP_GROUP`
 
-Read [OPEN_SOURCE_SETUP.md](OPEN_SOURCE_SETUP.md) for the exact places these values are used.
+具体位置见 [OPEN_SOURCE_SETUP.md](OPEN_SOURCE_SETUP.md)。
 
-## Run
+推荐命名示例：
 
-Open `CostBar-kx.xcodeproj`, select the `CostBar-kx` scheme, and run.
+```text
+主 App Bundle ID：   com.yourname.RelayBar
+Widget Bundle ID：  com.yourname.RelayBar.Widget
+App Group：         TEAMID.com.yourname.relaybar.widget
+```
 
-Command-line debug build:
+## 运行
+
+用 Xcode 打开 `CostBar-kx.xcodeproj`，选择 `CostBar-kx` scheme，然后运行。
+
+也可以用命令行构建：
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
@@ -84,38 +92,38 @@ xcodebuild -project CostBar-kx.xcodeproj \
   build
 ```
 
-## Configure A Provider
+## 添加配置档
 
-1. Open RelayBar.
-2. Open Settings from the menu bar popover.
-3. Add or edit a provider profile.
-4. Enter the provider credential.
-5. Save and test the connection.
+1. 打开 RelayBar。
+2. 从菜单栏弹窗进入设置。
+3. 新增或编辑一个配置档。
+4. 填写站点地址和 API Key。
+5. 保存后测试连接。
 
-Use Clear Credential to remove a saved credential from Keychain.
+如果要移除已保存的凭证，请使用“清除凭证”。凭证会从 Keychain 删除，同时清理对应的缓存快照。
 
-## Add The macOS Widget
+## 添加桌面小组件
 
-1. Right-click the desktop.
-2. Choose Edit Widgets.
-3. Search for RelayBar.
-4. Add Small, Medium, or Large.
-5. Open the main app and refresh once if the widget has no cache yet.
+1. 在 macOS 桌面右键。
+2. 选择“编辑小组件”。
+3. 搜索 RelayBar。
+4. 添加 Small、Medium 或 Large 小组件。
+5. 如果小组件暂无数据，先打开主 App 手动刷新一次。
 
-## CC Switch Integration
+## CC Switch 跟随
 
-RelayBar can optionally follow the current CC Switch provider.
+RelayBar 可以选择跟随 CC Switch 当前供应商。
 
-Modes:
+支持两种模式：
 
-- Read current status only
-- Read current status and import the current provider key into RelayBar Keychain
+- 只读状态：仅读取当前供应商状态
+- 读取状态和 Key：读取当前供应商，并将 Key 写入 RelayBar 自己的 Keychain
 
-CC Switch is read only by the main app. The widget never reads CC Switch directly.
+CC Switch 只由主 App 读取。Widget 不会直接读取 CC Switch，也不会读取任何凭证。
 
-## Pre-Commit Checks
+## 发布前检查
 
-Run these before publishing:
+发布前建议运行：
 
 ```bash
 rg -n "sk-|Authorization|Bearer|Cookie|api-key" .
@@ -123,8 +131,8 @@ rg -n "DEVELOPMENT_TEAM|PRODUCT_BUNDLE_IDENTIFIER|RELAYBAR_APP_GROUP|App Group" 
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project CostBar-kx.xcodeproj -scheme CostBar-kx -configuration Debug build
 ```
 
-Expected credential matches should be request-header implementation code, placeholders, or documentation warnings only.
+第一条命令如果有命中，应只出现在请求头实现代码、占位符或安全说明里，不应出现真实凭证。
 
-## License
+## 许可证
 
-MIT. See [LICENSE](LICENSE).
+MIT，见 [LICENSE](LICENSE)。
