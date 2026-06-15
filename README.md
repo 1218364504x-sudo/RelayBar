@@ -81,7 +81,7 @@ App Group：         TEAMID.com.yourname.relaybar.widget
 
 用 Xcode 打开 `CostBar-kx.xcodeproj`，选择 `CostBar-kx` scheme，然后运行。
 
-也可以用命令行构建：
+也可以用命令行验证编译。未配置签名前，建议先关闭代码签名：
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
@@ -89,6 +89,7 @@ xcodebuild -project CostBar-kx.xcodeproj \
   -scheme CostBar-kx \
   -configuration Debug \
   -derivedDataPath /tmp/relaybar-build \
+  CODE_SIGNING_ALLOWED=NO \
   build
 ```
 
@@ -128,7 +129,7 @@ CC Switch 只由主 App 读取。Widget 不会直接读取 CC Switch，也不会
 ```bash
 rg -n "sk-|Authorization|Bearer|Cookie|api-key" .
 rg -n "DEVELOPMENT_TEAM|PRODUCT_BUNDLE_IDENTIFIER|RELAYBAR_APP_GROUP|App Group" README.md OPEN_SOURCE_SETUP.md project.yml CostBar-kx.xcodeproj/project.pbxproj
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project CostBar-kx.xcodeproj -scheme CostBar-kx -configuration Debug build
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project CostBar-kx.xcodeproj -scheme CostBar-kx -configuration Debug CODE_SIGNING_ALLOWED=NO build
 ```
 
 第一条命令如果有命中，应只出现在请求头实现代码、占位符或安全说明里，不应出现真实凭证。
