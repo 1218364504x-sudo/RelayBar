@@ -19,6 +19,19 @@ struct MenuBarPopover: View {
                 PopoverMetricRow(label: "今日消费", value: dashboardVM.formatPixelTodayCost(snapshot), color: .purple)
                 PopoverMetricRow(label: "今日 Token", value: dashboardVM.formatPixelTokens(snapshot?.todayTokenTotal), color: .orange)
                 PopoverMetricRow(label: "累计 Token", value: dashboardVM.formatPixelTokens(snapshot?.totalTokenTotal), color: .blue)
+                if let quota = snapshot?.codexQuota {
+                    Divider()
+                    PopoverMetricRow(
+                        label: "Codex 周额度",
+                        value: dashboardVM.formatCodexQuota(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true),
+                        color: .teal
+                    )
+                    PopoverMetricRow(
+                        label: "Codex 5h",
+                        value: dashboardVM.formatCodexQuota(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true),
+                        color: .indigo
+                    )
+                }
             }
             .padding(14)
             .background(Color.white.opacity(0.34), in: RoundedRectangle(cornerRadius: 16))

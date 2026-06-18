@@ -11,6 +11,7 @@ RelayBar 是一个 macOS 原生菜单栏应用，配套悬浮窗和 WidgetKit �
 - 支持 CC Switch 当前供应商跟随
 - 支持悬浮窗显示核心余额信息
 - 支持 WidgetKit Small / Medium / Large 桌面小组件
+- 支持 Codex 5h / 周剩余额度显示
 - 支持本地缓存最近一次脱敏快照
 
 ## 隐私与安全
@@ -22,6 +23,7 @@ RelayBar 是一个 macOS 原生菜单栏应用，配套悬浮窗和 WidgetKit �
 - Widget 不读取 CC Switch
 - Widget 只读取主 App 写入 App Group 的脱敏缓存
 - App Group 缓存不应包含 Authorization、Bearer、Cookie 或任何凭证
+- Codex 额度读取只保存剩余百分比和重置时间，不保存 Codex 登录凭证
 
 ## 快速上手
 
@@ -35,6 +37,7 @@ RelayBar 是一个 macOS 原生菜单栏应用，配套悬浮窗和 WidgetKit �
 5. 打开菜单栏 RelayBar 图标，进入设置页
 6. 新增或编辑配置档，填写 Base URL 和访问凭证
 7. 保存后点击测试连接
+8. 如需显示 Codex 额度，在设置页开启“显示 Codex 剩余额度”；已安装并登录 Codex CLI 时可开启自动读取
 
 推荐命名格式：
 

@@ -80,6 +80,17 @@ struct ActiveProviderSelection: Codable, Equatable {
     let updatedAt: Date
 }
 
+struct CodexQuotaSnapshot: Codable, Equatable {
+    let weeklyRemaining: Double?
+    let weeklyTotal: Double?
+    let weeklyResetAt: Date?
+    let fiveHourRemaining: Double?
+    let fiveHourTotal: Double?
+    let fiveHourResetAt: Date?
+    let isPercentBased: Bool?
+    let updatedAt: Date
+}
+
 struct PixelDashboardSnapshot: Codable {
     let providerName: String
     let baseURL: String
@@ -99,6 +110,7 @@ struct PixelDashboardSnapshot: Codable {
     var providerID: String? = nil
     var providerType: APIProviderType? = nil
     var baseURLHost: String? = nil
+    var codexQuota: CodexQuotaSnapshot? = nil
 
     func withStatus(_ status: PixelDashboardStatus, errorMessage: String? = nil, updatedAt: Date? = nil) -> PixelDashboardSnapshot {
         var snapshot = PixelDashboardSnapshot(
@@ -121,6 +133,7 @@ struct PixelDashboardSnapshot: Codable {
         snapshot.providerID = providerID
         snapshot.providerType = providerType
         snapshot.baseURLHost = baseURLHost
+        snapshot.codexQuota = codexQuota
         return snapshot
     }
 
@@ -145,6 +158,7 @@ struct PixelDashboardSnapshot: Codable {
         snapshot.providerID = profile.id
         snapshot.providerType = profile.providerType
         snapshot.baseURLHost = profile.baseURLHost
+        snapshot.codexQuota = codexQuota
         return snapshot
     }
 }

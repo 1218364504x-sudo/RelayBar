@@ -27,6 +27,7 @@ struct SettingsView: View {
                         .environmentObject(dashboardVM)
                     legacyAccountSettingsSection
                     connectionSection
+                    codexQuotaSection
                     displaySection
                     refreshSection
                     aboutSection
@@ -306,6 +307,138 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private var codexQuotaSection: some View {
+        GroupBox("Codex 额度") {
+            VStack(alignment: .leading, spacing: 12) {
+                Toggle(isOn: Binding(
+                    get: { dashboardVM.codexQuotaEnabled },
+                    set: { dashboardVM.codexQuotaEnabled = $0 }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("显示 Codex 剩余额度")
+                            .font(.subheadline)
+                        Text("可自动读取或手动维护周额度和 5h 额度；不会读取 Codex 凭证，也不会让 Widget 请求网络。")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Toggle(isOn: Binding(
+                    get: { dashboardVM.codexQuotaAutoRefreshEnabled },
+                    set: { dashboardVM.codexQuotaAutoRefreshEnabled = $0 }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("自动读取 Codex CLI 额度")
+                            .font(.subheadline)
+                        Text("通过本机 codex app-server 读取 5h/周使用率，只保存剩余百分比和重置时间。")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .disabled(!dashboardVM.codexQuotaEnabled)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    quotaInputRow(
+                        title: "周额度",
+                        remaining: Binding(
+                            get: { dashboardVM.codexWeeklyRemaining },
+                            set: { dashboardVM.codexWeeklyRemaining = max(0, $0) }
+                        ),
+                        total: Binding(
+                            get: { dashboardVM.codexWeeklyTotal },
+                            set: { dashboardVM.codexWeeklyTotal = max(0, $0) }
+                        )
+                    )
+
+                    quotaInputRow(
+                        title: "5h 额度",
+                        remaining: Binding(
+                            get: { dashboardVM.codexFiveHourRemaining },
+                            set: { dashboardVM.codexFiveHourRemaining = max(0, $0) }
+                        ),
+                        total: Binding(
+                            get: { dashboardVM.codexFiveHourTotal },
+                            set: { dashboardVM.codexFiveHourTotal = max(0, $0) }
+                        )
+                    )
+                }
+                .disabled(!dashboardVM.codexQuotaEnabled || dashboardVM.codexQuotaAutoRefreshEnabled)
+
+                HStack {
+                    Button("读取并开启自动") {
+                        Task { await dashboardVM.refreshCodexQuotaFromCLI() }
+                    }
+                    .disabled(!dashboardVM.codexQuotaEnabled || dashboardVM.isReadingCodexQuota)
+
+                    if dashboardVM.isReadingCodexQuota {
+                        ProgressView()
+                            .scaleEffect(0.6)
+                            .frame(width: 16, height: 16)
+                    }
+
+                    Button("恢复为满额") {
+                        dashboardVM.resetCodexQuotaToFull()
+                    }
+                    .disabled(!dashboardVM.codexQuotaEnabled || dashboardVM.codexQuotaAutoRefreshEnabled)
+
+                    if let quota = dashboardVM.pixelDashboardSnapshot?.codexQuota {
+                        Text("当前：周 \(dashboardVM.formatCodexQuota(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))，5h \(dashboardVM.formatCodexQuota(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                }
+
+                if let quota = dashboardVM.pixelDashboardSnapshot?.codexQuota, quota.isPercentBased == true {
+                    Text("重置：周 \(dashboardVM.formatCodexQuotaResetTime(quota.weeklyResetAt))，5h \(dashboardVM.formatCodexQuotaResetTime(quota.fiveHourResetAt))")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                if let error = dashboardVM.codexQuotaLastReadError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                } else if let date = dashboardVM.codexQuotaLastReadDate {
+                    Text("上次读取 \(dashboardVM.formatPixelTime(date))")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func quotaInputRow(
+        title: String,
+        remaining: Binding<Double>,
+        total: Binding<Double>
+    ) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(title)
+                .frame(width: 72, alignment: .leading)
+                .font(.subheadline.weight(.medium))
+
+            TextField("剩余", value: remaining, format: .number)
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 96)
+
+            Text("/")
+                .foregroundColor(.secondary)
+
+            TextField("总量", value: total, format: .number)
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 96)
+
+            Text("剩余 / 总量")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Spacer(minLength: 0)
         }
     }
 

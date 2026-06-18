@@ -12,6 +12,7 @@ struct UsageChartView: View {
 
                 if let snapshot {
                     metricGrid(snapshot)
+                    codexQuotaSummary(snapshot)
                     tokenBreakdownChart(snapshot)
                     costSummary(snapshot)
                 } else {
@@ -68,6 +69,53 @@ struct UsageChartView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    @ViewBuilder
+    private func codexQuotaSummary(_ snapshot: PixelDashboardSnapshot) -> some View {
+        if let quota = snapshot.codexQuota {
+            GroupBox("Codex 额度") {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 12),
+                    GridItem(.flexible(), spacing: 12)
+                ], spacing: 12) {
+                    quotaCard(
+                        title: "周额度",
+                        value: formatQuota(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true),
+                        percent: formatQuotaPercent(remaining: quota.weeklyRemaining, total: quota.weeklyTotal),
+                        color: .teal
+                    )
+                    quotaCard(
+                        title: "5h 额度",
+                        value: formatQuota(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true),
+                        percent: formatQuotaPercent(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal),
+                        color: .indigo
+                    )
+                }
+            }
+        }
+    }
+
+    private func quotaCard(title: String, value: String, percent: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(percent)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(color)
+            }
+            Text(value)
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .foregroundStyle(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private func tokenBreakdownChart(_ snapshot: PixelDashboardSnapshot) -> some View {
@@ -207,6 +255,24 @@ struct UsageChartView: View {
             return String(format: "%.1fK", value / 1_000)
         }
         return String(format: "%.0f", value)
+    }
+
+    private func formatQuota(remaining: Double?, total: Double?, isPercentBased: Bool = false) -> String {
+        guard let remaining else { return "--" }
+        let safeRemaining = max(0, remaining)
+        if isPercentBased {
+            return String(format: "%.0f%%", min(100, safeRemaining))
+        }
+        guard let total, total > 0 else {
+            return String(format: "%.0f", safeRemaining)
+        }
+        return "\(String(format: "%.0f", safeRemaining)) / \(String(format: "%.0f", total))"
+    }
+
+    private func formatQuotaPercent(remaining: Double?, total: Double?) -> String {
+        guard let remaining, let total, total > 0 else { return "--" }
+        let percent = max(0, min(1, remaining / total)) * 100
+        return String(format: "%.0f%%", percent)
     }
 
     private func formatTime(_ date: Date) -> String {

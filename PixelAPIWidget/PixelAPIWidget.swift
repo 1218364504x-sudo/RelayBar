@@ -11,25 +11,36 @@ struct PixelAPIWidgetEntry: TimelineEntry {
 
 struct PixelAPIWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> PixelAPIWidgetEntry {
-        PixelAPIWidgetEntry(
+        var snapshot = PixelDashboardSnapshot(
+            providerName: "Pixel API",
+            baseURL: "",
+            balance: 44.69,
+            balanceCurrency: "USD",
+            todayCostPrimary: 0.2453,
+            todayCostSecondary: 1.2267,
+            todayTokenTotal: 700_500,
+            todayInputTokens: 103_800,
+            todayOutputTokens: 13_900,
+            totalTokenTotal: 422_100_000,
+            totalInputTokens: 43_000_000,
+            totalOutputTokens: 3_400_000,
+            updatedAt: Date(),
+            status: .normal,
+            errorMessage: nil
+        )
+        snapshot.codexQuota = CodexQuotaSnapshot(
+            weeklyRemaining: 72,
+            weeklyTotal: 100,
+            weeklyResetAt: Date().addingTimeInterval(60 * 60 * 24 * 2),
+            fiveHourRemaining: 18,
+            fiveHourTotal: 25,
+            fiveHourResetAt: Date().addingTimeInterval(60 * 90),
+            isPercentBased: false,
+            updatedAt: Date()
+        )
+        return PixelAPIWidgetEntry(
             date: Date(),
-            snapshot: PixelDashboardSnapshot(
-                providerName: "Pixel API",
-                baseURL: "",
-                balance: 44.69,
-                balanceCurrency: "USD",
-                todayCostPrimary: 0.2453,
-                todayCostSecondary: 1.2267,
-                todayTokenTotal: 700_500,
-                todayInputTokens: 103_800,
-                todayOutputTokens: 13_900,
-                totalTokenTotal: 422_100_000,
-                totalInputTokens: 43_000_000,
-                totalOutputTokens: 3_400_000,
-                updatedAt: Date(),
-                status: .normal,
-                errorMessage: nil
-            ),
+            snapshot: snapshot,
             isStale: false,
             diagnosticMessage: nil
         )
@@ -85,6 +96,7 @@ struct PixelAPIWidgetView: View {
         static let orange = Color(red: 0.86, green: 0.37, blue: 0.02)
         static let purple = Color(red: 0.35, green: 0.32, blue: 0.80)
         static let blue = Color(red: 0.04, green: 0.35, blue: 0.78)
+        static let teal = Color(red: 0.02, green: 0.49, blue: 0.55)
         static let red = Color(red: 0.82, green: 0.10, blue: 0.16)
         static let gray = Color(red: 0.44, green: 0.49, blue: 0.56)
     }
@@ -193,6 +205,15 @@ struct PixelAPIWidgetView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.45)
                     .widgetAccentable(false)
+
+                if let quota = snapshot.codexQuota {
+                    Text("周 \(formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))  5h \(formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true))")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Palette.teal)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.55)
+                        .widgetAccentable(false)
+                }
             }
 
             Spacer(minLength: 0)
@@ -226,6 +247,10 @@ struct PixelAPIWidgetView: View {
                 )
             }
             Spacer(minLength: 0)
+            if let quota = snapshot.codexQuota {
+                codexQuotaStrip(quota, compact: true)
+                Spacer(minLength: 0)
+            }
             lastUpdatedBar(snapshot, compact: true)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -279,6 +304,10 @@ struct PixelAPIWidgetView: View {
             .layoutPriority(1)
 
             Spacer(minLength: 8)
+            if let quota = snapshot.codexQuota {
+                codexQuotaStrip(quota, compact: false)
+                Spacer(minLength: 6)
+            }
             tokenBreakdownSummary(snapshot)
             Spacer(minLength: 4)
             lastUpdatedBar(snapshot, compact: true)
@@ -434,6 +463,42 @@ struct PixelAPIWidgetView: View {
                 .stroke(Palette.border, lineWidth: 1)
         )
         .shadow(color: Color(red: 0.18, green: 0.22, blue: 0.28).opacity(0.08), radius: 12, y: 5)
+    }
+
+    private func codexQuotaStrip(_ quota: CodexQuotaSnapshot, compact: Bool) -> some View {
+        HStack(spacing: compact ? 8 : 12) {
+            quotaPill(
+                title: "周",
+                value: formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true),
+                compact: compact
+            )
+            quotaPill(
+                title: "5h",
+                value: formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true),
+                compact: compact
+            )
+        }
+        .padding(.horizontal, compact ? 10 : 14)
+        .padding(.vertical, compact ? 7 : 10)
+        .background(Palette.cardSubtle, in: RoundedRectangle(cornerRadius: compact ? 12 : 16, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: compact ? 12 : 16, style: .continuous)
+                .stroke(Palette.border, lineWidth: 1)
+        )
+    }
+
+    private func quotaPill(title: String, value: String, compact: Bool) -> some View {
+        HStack(spacing: 4) {
+            Text(title)
+                .foregroundStyle(Palette.label)
+            Text(value)
+                .foregroundStyle(Palette.teal)
+        }
+        .font(.system(size: compact ? 11 : 12, weight: .bold, design: .rounded))
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .widgetAccentable(false)
     }
 
     private func tokenBreakdownSummary(_ snapshot: PixelDashboardSnapshot) -> some View {
@@ -615,6 +680,18 @@ struct PixelAPIWidgetView: View {
             return String(format: "%.1fK", value / 1_000)
         }
         return String(format: "%.0f", value)
+    }
+
+    private func formatQuotaShort(remaining: Double?, total: Double?, isPercentBased: Bool = false) -> String {
+        guard let remaining else { return "--" }
+        let safeRemaining = max(0, remaining)
+        if isPercentBased {
+            return String(format: "%.0f%%", min(100, safeRemaining))
+        }
+        guard let total, total > 0 else {
+            return String(format: "%.0f", safeRemaining)
+        }
+        return "\(String(format: "%.0f", safeRemaining))/\(String(format: "%.0f", total))"
     }
 
     private func formatTime(_ date: Date) -> String {

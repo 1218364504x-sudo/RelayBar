@@ -76,6 +76,32 @@ final class DashboardViewModel: ObservableObject {
             publishPixelDashboardSnapshotForCurrentState()
         }
     }
+    @Published var codexQuotaEnabled = false {
+        didSet { saveCodexQuotaSettingsAndPublish() }
+    }
+    @Published var codexQuotaAutoRefreshEnabled = false {
+        didSet {
+            saveCodexQuotaSettingsAndPublish()
+            if codexQuotaAutoRefreshEnabled, oldValue != codexQuotaAutoRefreshEnabled, !isReadingCodexQuota {
+                Task { await refreshCodexQuotaFromCLI() }
+            }
+        }
+    }
+    @Published var codexWeeklyRemaining: Double = 0 {
+        didSet { saveCodexQuotaSettingsAndPublish() }
+    }
+    @Published var codexWeeklyTotal: Double = 0 {
+        didSet { saveCodexQuotaSettingsAndPublish() }
+    }
+    @Published var codexFiveHourRemaining: Double = 0 {
+        didSet { saveCodexQuotaSettingsAndPublish() }
+    }
+    @Published var codexFiveHourTotal: Double = 0 {
+        didSet { saveCodexQuotaSettingsAndPublish() }
+    }
+    @Published private(set) var codexQuotaLastReadDate: Date?
+    @Published private(set) var codexQuotaLastReadError: String?
+    @Published private(set) var isReadingCodexQuota = false
     @Published var exchangeRate: Double?
 
     enum CurrencyType: String, CaseIterable, Identifiable {
@@ -275,6 +301,40 @@ final class DashboardViewModel: ObservableObject {
         return formatter.string(from: date)
     }
 
+    func formatCodexQuota(remaining: Double?, total: Double?, isPercentBased: Bool = false) -> String {
+        guard let remaining else { return "--" }
+        let roundedRemaining = max(0, remaining)
+        if isPercentBased {
+            return String(format: "%.0f%%", min(100, roundedRemaining))
+        }
+        guard let total, total > 0 else {
+            return String(format: "%.0f", roundedRemaining)
+        }
+        return "\(String(format: "%.0f", roundedRemaining)) / \(String(format: "%.0f", total))"
+    }
+
+    func formatCodexQuotaPercent(remaining: Double?, total: Double?, isPercentBased: Bool = false) -> String {
+        guard let remaining, let total, total > 0 else { return "--" }
+        let percent = max(0, min(1, remaining / total)) * 100
+        return String(format: "%.0f%%", percent)
+    }
+
+    func formatCodexQuotaResetTime(_ date: Date?) -> String {
+        guard let date else { return "--" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = Calendar.current.isDateInToday(date) ? "HH:mm" : "MM-dd HH:mm"
+        return formatter.string(from: date)
+    }
+
+    func resetCodexQuotaToFull() {
+        if codexWeeklyTotal > 0 {
+            codexWeeklyRemaining = codexWeeklyTotal
+        }
+        if codexFiveHourTotal > 0 {
+            codexFiveHourRemaining = codexFiveHourTotal
+        }
+    }
+
     private let keychain = KeychainStorage()
     private let cache = LocalCache()
     private var refreshTask: Task<Void, Never>?
@@ -284,6 +344,16 @@ final class DashboardViewModel: ObservableObject {
     private let exchangeService = ExchangeRateService()
     private let ccSwitchService = CCSwitchIntegrationService()
     private let defaultProviderProfileID = "pixel_default"
+    private let codexQuotaEnabledKey = "codexQuotaEnabled"
+    private let codexQuotaAutoRefreshEnabledKey = "codexQuotaAutoRefreshEnabled"
+    private let codexWeeklyRemainingKey = "codexWeeklyRemaining"
+    private let codexWeeklyTotalKey = "codexWeeklyTotal"
+    private let codexWeeklyResetAtKey = "codexWeeklyResetAt"
+    private let codexFiveHourRemainingKey = "codexFiveHourRemaining"
+    private let codexFiveHourTotalKey = "codexFiveHourTotal"
+    private let codexFiveHourResetAtKey = "codexFiveHourResetAt"
+    private let codexQuotaLastReadAtKey = "codexQuotaLastReadAt"
+    private var isLoadingPreferences = false
 
     var totalCostThisMonth: Double {
         usageSummaries.values.reduce(0) { $0 + $1.totalCostThisMonth }
@@ -334,6 +404,9 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func loadPreferences() {
+        isLoadingPreferences = true
+        defer { isLoadingPreferences = false }
+
         showFloatingWindow = UserDefaults.standard.bool(forKey: "showFloatingWindow")
         let didMigrateMenuBarBalanceDefaultKey = "didMigrateMenuBarBalanceDefaultV2"
         if !UserDefaults.standard.bool(forKey: didMigrateMenuBarBalanceDefaultKey) {
@@ -361,6 +434,13 @@ final class DashboardViewModel: ObservableObject {
         if savedThreshold > 0 {
             lowBalanceThreshold = savedThreshold
         }
+        codexQuotaEnabled = UserDefaults.standard.bool(forKey: codexQuotaEnabledKey)
+        codexQuotaAutoRefreshEnabled = UserDefaults.standard.bool(forKey: codexQuotaAutoRefreshEnabledKey)
+        codexWeeklyRemaining = UserDefaults.standard.double(forKey: codexWeeklyRemainingKey)
+        codexWeeklyTotal = UserDefaults.standard.double(forKey: codexWeeklyTotalKey)
+        codexFiveHourRemaining = UserDefaults.standard.double(forKey: codexFiveHourRemainingKey)
+        codexFiveHourTotal = UserDefaults.standard.double(forKey: codexFiveHourTotalKey)
+        codexQuotaLastReadDate = UserDefaults.standard.object(forKey: codexQuotaLastReadAtKey) as? Date
     }
 
     func fetchExchangeRate() {
@@ -443,11 +523,12 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func publishWidgetSnapshot(_ snapshot: PixelDashboardSnapshot, saveProviderCopy: Bool = true) {
+        let snapshotForWidget = snapshotWithCodexQuota(snapshot)
         do {
             if saveProviderCopy {
-                try PixelDashboardSnapshotStore.save(snapshot)
+                try PixelDashboardSnapshotStore.save(snapshotForWidget)
             } else {
-                try PixelDashboardSnapshotStore.saveCurrent(snapshot)
+                try PixelDashboardSnapshotStore.saveCurrent(snapshotForWidget)
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
@@ -506,6 +587,7 @@ final class DashboardViewModel: ObservableObject {
         } else {
             await refreshActiveProviderCore()
         }
+        await refreshCodexQuotaIfNeeded()
 
         // Fetch exchange rate if USD display is preferred
         if preferredCurrency == .usd {
@@ -606,7 +688,7 @@ final class DashboardViewModel: ObservableObject {
             )
         }
 
-        let profiledSnapshot = snapshot.withProfile(profile)
+        let profiledSnapshot = snapshotWithCodexQuota(snapshot.withProfile(profile))
         pixelDashboardSnapshot = profiledSnapshot
         publishWidgetSnapshot(profiledSnapshot)
     }
@@ -662,7 +744,7 @@ final class DashboardViewModel: ObservableObject {
 
         do {
             let snapshot = try await fetchSnapshot(for: profile, credential: credential)
-            let profiledSnapshot = snapshot.withProfile(profile)
+            let profiledSnapshot = snapshotWithCodexQuota(snapshot.withProfile(profile))
             pixelDashboardSnapshot = profiledSnapshot
             errorMessages[.pixel] = nil
 
@@ -688,16 +770,18 @@ final class DashboardViewModel: ObservableObject {
                 let snapshot = cachedSnapshot
                     .withProfile(profile)
                     .withStatus(.cached, errorMessage: safeMessage)
-                pixelDashboardSnapshot = snapshot
-                publishWidgetSnapshot(snapshot, saveProviderCopy: false)
+                let snapshotWithQuota = snapshotWithCodexQuota(snapshot)
+                pixelDashboardSnapshot = snapshotWithQuota
+                publishWidgetSnapshot(snapshotWithQuota, saveProviderCopy: false)
             } else {
                 let snapshot = emptySnapshot(
                     for: profile,
                     status: statusForErrorMessage(rawMessage),
                     errorMessage: safeMessage
                 )
-                pixelDashboardSnapshot = snapshot
-                publishWidgetSnapshot(snapshot, saveProviderCopy: false)
+                let snapshotWithQuota = snapshotWithCodexQuota(snapshot)
+                pixelDashboardSnapshot = snapshotWithQuota
+                publishWidgetSnapshot(snapshotWithQuota, saveProviderCopy: false)
             }
         }
     }
@@ -776,6 +860,97 @@ final class DashboardViewModel: ObservableObject {
             status: status,
             errorMessage: errorMessage
         ).withProfile(profile)
+    }
+
+    private var currentCodexQuotaSnapshot: CodexQuotaSnapshot? {
+        guard codexQuotaEnabled else { return nil }
+        let weeklyTotal = codexWeeklyTotal > 0 ? codexWeeklyTotal : nil
+        let weeklyRemaining = quotaRemaining(codexWeeklyRemaining, total: weeklyTotal)
+        let fiveHourTotal = codexFiveHourTotal > 0 ? codexFiveHourTotal : nil
+        let fiveHourRemaining = quotaRemaining(codexFiveHourRemaining, total: fiveHourTotal)
+        let weeklyResetAt = UserDefaults.standard.object(forKey: codexWeeklyResetAtKey) as? Date
+        let fiveHourResetAt = UserDefaults.standard.object(forKey: codexFiveHourResetAtKey) as? Date
+
+        guard weeklyRemaining != nil || weeklyTotal != nil || fiveHourRemaining != nil || fiveHourTotal != nil else {
+            return nil
+        }
+
+        return CodexQuotaSnapshot(
+            weeklyRemaining: weeklyRemaining,
+            weeklyTotal: weeklyTotal,
+            weeklyResetAt: weeklyResetAt,
+            fiveHourRemaining: fiveHourRemaining,
+            fiveHourTotal: fiveHourTotal,
+            fiveHourResetAt: fiveHourResetAt,
+            isPercentBased: codexQuotaAutoRefreshEnabled,
+            updatedAt: Date()
+        )
+    }
+
+    private func quotaRemaining(_ value: Double, total: Double?) -> Double? {
+        guard value.isFinite, value >= 0 else { return nil }
+        if let total {
+            return min(value, total)
+        }
+        return value > 0 ? value : nil
+    }
+
+    private func snapshotWithCodexQuota(_ snapshot: PixelDashboardSnapshot) -> PixelDashboardSnapshot {
+        var snapshot = snapshot
+        snapshot.codexQuota = currentCodexQuotaSnapshot
+        return snapshot
+    }
+
+    private func saveCodexQuotaSettingsAndPublish() {
+        guard !isLoadingPreferences else { return }
+        UserDefaults.standard.set(codexQuotaEnabled, forKey: codexQuotaEnabledKey)
+        UserDefaults.standard.set(codexQuotaAutoRefreshEnabled, forKey: codexQuotaAutoRefreshEnabledKey)
+        UserDefaults.standard.set(max(0, codexWeeklyRemaining), forKey: codexWeeklyRemainingKey)
+        UserDefaults.standard.set(max(0, codexWeeklyTotal), forKey: codexWeeklyTotalKey)
+        UserDefaults.standard.set(max(0, codexFiveHourRemaining), forKey: codexFiveHourRemainingKey)
+        UserDefaults.standard.set(max(0, codexFiveHourTotal), forKey: codexFiveHourTotalKey)
+        publishPixelDashboardSnapshotForCurrentState()
+    }
+
+    func refreshCodexQuotaIfNeeded() async {
+        guard codexQuotaEnabled, codexQuotaAutoRefreshEnabled else { return }
+        await refreshCodexQuotaFromCLI()
+    }
+
+    func refreshCodexQuotaFromCLI() async {
+        guard codexQuotaEnabled else { return }
+        isReadingCodexQuota = true
+        codexQuotaLastReadError = nil
+        defer { isReadingCodexQuota = false }
+
+        do {
+            let reading = try await CodexQuotaCLIReader().fetchQuota()
+            if let weekly = reading.weeklyRemainingPercent {
+                codexWeeklyRemaining = weekly
+                codexWeeklyTotal = 100
+            }
+            if let fiveHour = reading.fiveHourRemainingPercent {
+                codexFiveHourRemaining = fiveHour
+                codexFiveHourTotal = 100
+            }
+            if let date = reading.weeklyResetAt {
+                UserDefaults.standard.set(date, forKey: codexWeeklyResetAtKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: codexWeeklyResetAtKey)
+            }
+            if let date = reading.fiveHourResetAt {
+                UserDefaults.standard.set(date, forKey: codexFiveHourResetAtKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: codexFiveHourResetAtKey)
+            }
+            let now = Date()
+            codexQuotaLastReadDate = now
+            UserDefaults.standard.set(now, forKey: codexQuotaLastReadAtKey)
+            codexQuotaAutoRefreshEnabled = true
+            publishPixelDashboardSnapshotForCurrentState()
+        } catch {
+            codexQuotaLastReadError = error.localizedDescription
+        }
     }
 
     private func normalizedBaseURL(_ value: String) -> String {
@@ -1272,5 +1447,230 @@ final class DashboardViewModel: ObservableObject {
 
     deinit {
         refreshTask?.cancel()
+    }
+}
+
+private struct CodexQuotaReading {
+    let weeklyRemainingPercent: Double?
+    let weeklyResetAt: Date?
+    let fiveHourRemainingPercent: Double?
+    let fiveHourResetAt: Date?
+}
+
+private struct CodexQuotaCLIReader {
+    func fetchQuota(timeout: TimeInterval = 8) async throws -> CodexQuotaReading {
+        try await Task.detached(priority: .utility) {
+            try self.fetchQuotaSynchronously(timeout: timeout)
+        }.value
+    }
+
+    private func fetchQuotaSynchronously(timeout: TimeInterval) throws -> CodexQuotaReading {
+        let process = Process()
+        if let codexURL = codexExecutableURL() {
+            process.executableURL = codexURL
+            process.arguments = ["app-server"]
+        } else {
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["codex", "app-server"]
+        }
+
+        let input = Pipe()
+        let output = Pipe()
+        let error = Pipe()
+        process.standardInput = input
+        process.standardOutput = output
+        process.standardError = error
+
+        let lock = NSLock()
+        var buffer = Data()
+        var capturedError = Data()
+        var result: Result<CodexQuotaReading, Error>?
+        let semaphore = DispatchSemaphore(value: 0)
+
+        func finish(_ value: Result<CodexQuotaReading, Error>) {
+            lock.lock()
+            if result == nil {
+                result = value
+                semaphore.signal()
+            }
+            lock.unlock()
+        }
+
+        func send(_ object: [String: Any]) {
+            guard JSONSerialization.isValidJSONObject(object),
+                  let data = try? JSONSerialization.data(withJSONObject: object) else { return }
+            input.fileHandleForWriting.write(data)
+            input.fileHandleForWriting.write(Data([0x0A]))
+        }
+
+        output.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            guard !data.isEmpty else { return }
+
+            lock.lock()
+            buffer.append(data)
+            var completeLines: [Data] = []
+            while let newline = buffer.firstRange(of: Data([0x0A])) {
+                let line = buffer[..<newline.lowerBound]
+                if !line.isEmpty {
+                    completeLines.append(Data(line))
+                }
+                buffer.removeSubrange(..<newline.upperBound)
+            }
+            lock.unlock()
+
+            for line in completeLines {
+                guard let object = try? JSONSerialization.jsonObject(with: line) as? [String: Any] else {
+                    continue
+                }
+                if object["id"] as? Int == 1 {
+                    send(["method": "initialized"])
+                    send(["method": "account/rateLimits/read", "id": 2])
+                } else if object["id"] as? Int == 2 {
+                    do {
+                        finish(.success(try parseQuotaResponse(object)))
+                    } catch {
+                        finish(.failure(error))
+                    }
+                }
+            }
+        }
+
+        error.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            guard !data.isEmpty else { return }
+            lock.lock()
+            capturedError.append(data)
+            lock.unlock()
+        }
+
+        do {
+            try process.run()
+        } catch {
+            throw CodexQuotaCLIError.launchFailed
+        }
+
+        send([
+            "method": "initialize",
+            "id": 1,
+            "params": [
+                "clientInfo": [
+                    "name": "RelayBar",
+                    "version": "1.0"
+                ],
+                "capabilities": [:]
+            ]
+        ])
+
+        let waitResult = semaphore.wait(timeout: .now() + timeout)
+        output.fileHandleForReading.readabilityHandler = nil
+        error.fileHandleForReading.readabilityHandler = nil
+        if process.isRunning {
+            process.terminate()
+        }
+
+        if waitResult == .timedOut {
+            throw CodexQuotaCLIError.timeout
+        }
+
+        lock.lock()
+        let finalResult = result
+        let stderrText = String(data: capturedError, encoding: .utf8)
+        lock.unlock()
+
+        if let finalResult {
+            return try finalResult.get()
+        }
+        if let stderrText, stderrText.localizedCaseInsensitiveContains("login") {
+            throw CodexQuotaCLIError.notLoggedIn
+        }
+        throw CodexQuotaCLIError.invalidResponse
+    }
+
+    private func parseQuotaResponse(_ response: [String: Any]) throws -> CodexQuotaReading {
+        guard response["error"] == nil,
+              let result = response["result"] as? [String: Any] else {
+            throw CodexQuotaCLIError.invalidResponse
+        }
+
+        let rateLimits = (result["rateLimits"] as? [String: Any])
+            ?? ((result["rateLimitsByLimitId"] as? [String: Any])?["codex"] as? [String: Any])
+        guard let rateLimits else {
+            throw CodexQuotaCLIError.invalidResponse
+        }
+
+        let windows = [
+            rateLimits["primary"] as? [String: Any],
+            rateLimits["secondary"] as? [String: Any]
+        ].compactMap { $0 }.map(parseWindow)
+
+        let fiveHour = windows.first { $0.durationMinutes == 300 } ?? windows.first
+        let weekly = windows.first { $0.durationMinutes >= 10_080 } ?? windows.dropFirst().first
+
+        return CodexQuotaReading(
+            weeklyRemainingPercent: weekly?.remainingPercent,
+            weeklyResetAt: weekly?.resetAt,
+            fiveHourRemainingPercent: fiveHour?.remainingPercent,
+            fiveHourResetAt: fiveHour?.resetAt
+        )
+    }
+
+    private func parseWindow(_ object: [String: Any]) -> CodexQuotaWindow {
+        let used = numericValue(object["usedPercent"]) ?? 0
+        let duration = Int(numericValue(object["windowDurationMins"]) ?? 0)
+        let resetSeconds = numericValue(object["resetsAt"])
+        return CodexQuotaWindow(
+            remainingPercent: max(0, min(100, 100 - used)),
+            durationMinutes: duration,
+            resetAt: resetSeconds.map { Date(timeIntervalSince1970: $0) }
+        )
+    }
+
+    private func numericValue(_ value: Any?) -> Double? {
+        if let value = value as? Double { return value }
+        if let value = value as? Int { return Double(value) }
+        if let value = value as? NSNumber { return value.doubleValue }
+        return nil
+    }
+
+    private func codexExecutableURL() -> URL? {
+        let fileManager = FileManager.default
+        let candidates = [
+            "/Applications/Codex.app/Contents/Resources/codex",
+            "\(NSHomeDirectory())/Applications/Codex.app/Contents/Resources/codex",
+            "\(NSHomeDirectory())/.local/bin/codex",
+            "/opt/homebrew/bin/codex",
+            "/usr/local/bin/codex"
+        ]
+
+        return candidates
+            .map(URL.init(fileURLWithPath:))
+            .first { fileManager.isExecutableFile(atPath: $0.path) }
+    }
+}
+
+private struct CodexQuotaWindow {
+    let remainingPercent: Double
+    let durationMinutes: Int
+    let resetAt: Date?
+}
+
+private enum CodexQuotaCLIError: LocalizedError {
+    case launchFailed
+    case timeout
+    case notLoggedIn
+    case invalidResponse
+
+    var errorDescription: String? {
+        switch self {
+        case .launchFailed:
+            return "未找到 Codex CLI，或无法启动 codex app-server。"
+        case .timeout:
+            return "读取 Codex 额度超时。"
+        case .notLoggedIn:
+            return "Codex CLI 尚未登录。"
+        case .invalidResponse:
+            return "Codex 额度返回格式无法识别。"
+        }
     }
 }

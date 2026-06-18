@@ -52,6 +52,10 @@ struct FloatingBalanceView: View {
                     compactLine("今日消费", dashboardVM.formatPixelTodayCost(snapshot))
                     compactLine("今日 Token", dashboardVM.formatPixelTokens(snapshot.todayTokenTotal))
                     compactLine("累计 Token", dashboardVM.formatPixelTokens(snapshot.totalTokenTotal))
+                    if let quota = snapshot.codexQuota {
+                        compactLine("Codex 周", dashboardVM.formatCodexQuota(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))
+                        compactLine("Codex 5h", dashboardVM.formatCodexQuota(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true))
+                    }
                     compactLine("更新", dashboardVM.formatPixelTime(snapshot.updatedAt))
                 }
             }
