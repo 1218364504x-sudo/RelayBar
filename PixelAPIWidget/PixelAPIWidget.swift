@@ -193,21 +193,21 @@ struct PixelAPIWidgetView: View {
             Spacer(minLength: 0)
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("余额")
+                Text(shouldPrioritizeCodexQuota(snapshot) ? "5h 额度" : "余额")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(Palette.label)
                     .lineLimit(1)
                     .widgetAccentable(false)
 
-                Text(formatMoney(snapshot.balance, currency: snapshot.balanceCurrency))
+                Text(smallPrimaryValue(snapshot))
                     .font(.system(size: 42, weight: .bold, design: .rounded))
-                    .foregroundStyle(metricColor(.balance, snapshot: snapshot))
+                    .foregroundStyle(shouldPrioritizeCodexQuota(snapshot) ? Palette.teal : metricColor(.balance, snapshot: snapshot))
                     .lineLimit(1)
                     .minimumScaleFactor(0.45)
                     .widgetAccentable(false)
 
                 if let quota = snapshot.codexQuota {
-                    Text("周 \(formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))  5h \(formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true))")
+                    Text(shouldPrioritizeCodexQuota(snapshot) ? "周 \(formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))" : "周 \(formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true))  5h \(formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true))")
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundStyle(Palette.teal)
                         .lineLimit(1)
@@ -229,25 +229,40 @@ struct PixelAPIWidgetView: View {
             widgetHeader(snapshot)
             Spacer(minLength: 2)
             HStack(spacing: Layout.cardSpacing) {
-                metricCardView(
-                    "余额",
-                    formatMoney(snapshot.balance, currency: snapshot.balanceCurrency),
-                    subtitle: "可用",
-                    kind: .balance,
-                    snapshot: snapshot,
-                    size: .medium
-                )
-                metricCardView(
-                    "今日 Token",
-                    formatTokens(snapshot.todayTokenTotal),
-                    subtitle: "今日",
-                    kind: .todayToken,
-                    snapshot: snapshot,
-                    size: .medium
-                )
+                if shouldPrioritizeCodexQuota(snapshot), let quota = snapshot.codexQuota {
+                    quotaMetricCard(
+                        "5h 额度",
+                        formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true),
+                        subtitle: "剩余",
+                        size: .medium
+                    )
+                    quotaMetricCard(
+                        "周额度",
+                        formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true),
+                        subtitle: "剩余",
+                        size: .medium
+                    )
+                } else {
+                    metricCardView(
+                        "余额",
+                        formatMoney(snapshot.balance, currency: snapshot.balanceCurrency),
+                        subtitle: "可用",
+                        kind: .balance,
+                        snapshot: snapshot,
+                        size: .medium
+                    )
+                    metricCardView(
+                        "今日 Token",
+                        formatTokens(snapshot.todayTokenTotal),
+                        subtitle: "今日",
+                        kind: .todayToken,
+                        snapshot: snapshot,
+                        size: .medium
+                    )
+                }
             }
             Spacer(minLength: 0)
-            if let quota = snapshot.codexQuota {
+            if let quota = snapshot.codexQuota, !shouldPrioritizeCodexQuota(snapshot) {
                 codexQuotaStrip(quota, compact: true)
                 Spacer(minLength: 0)
             }
@@ -262,53 +277,19 @@ struct PixelAPIWidgetView: View {
             widgetHeader(snapshot)
             Spacer(minLength: 8)
 
-            VStack(spacing: Layout.cardSpacing) {
-                HStack(spacing: Layout.cardSpacing) {
-                    largeMetricCard(
-                        "余额",
-                        formatMoney(snapshot.balance, currency: snapshot.balanceCurrency),
-                        subtitle: "可用",
-                        kind: .balance,
-                        snapshot: snapshot,
-                        icon: "wallet.pass"
-                    )
-                    largeMetricCard(
-                        "今日消费",
-                        formatTodayCost(snapshot),
-                        subtitle: "实际 / 计费",
-                        kind: .todayCost,
-                        snapshot: snapshot,
-                        icon: "chart.line.uptrend.xyaxis"
-                    )
-                }
-
-                HStack(spacing: Layout.cardSpacing) {
-                    largeMetricCard(
-                        "今日 Token",
-                        formatTokens(snapshot.todayTokenTotal),
-                        subtitle: "今日",
-                        kind: .todayToken,
-                        snapshot: snapshot,
-                        icon: "flame"
-                    )
-                    largeMetricCard(
-                        "累计 Token",
-                        formatTokens(snapshot.totalTokenTotal),
-                        subtitle: "累计",
-                        kind: .totalToken,
-                        snapshot: snapshot,
-                        icon: "square.stack.3d.up"
-                    )
-                }
-            }
+            largePrimaryGrid(snapshot)
             .layoutPriority(1)
 
             Spacer(minLength: 8)
-            if let quota = snapshot.codexQuota {
+            if let quota = snapshot.codexQuota, !shouldPrioritizeCodexQuota(snapshot) {
                 codexQuotaStrip(quota, compact: false)
                 Spacer(minLength: 6)
             }
-            tokenBreakdownSummary(snapshot)
+            if shouldPrioritizeCodexQuota(snapshot) {
+                codexQuotaStrip(snapshot.codexQuota!, compact: false)
+            } else {
+                tokenBreakdownSummary(snapshot)
+            }
             Spacer(minLength: 4)
             lastUpdatedBar(snapshot, compact: true)
         }
@@ -321,7 +302,7 @@ struct PixelAPIWidgetView: View {
             Circle()
                 .fill(statusColor(for: snapshot))
                 .frame(width: compact ? 8 : 9, height: compact ? 8 : 9)
-            Text(snapshot.providerName)
+            Text(widgetTitle(for: snapshot))
                 .font(.system(size: compact ? 15 : 18, weight: .semibold, design: .rounded))
                 .foregroundStyle(Palette.title)
                 .lineLimit(1)
@@ -465,6 +446,108 @@ struct PixelAPIWidgetView: View {
         .shadow(color: Color(red: 0.18, green: 0.22, blue: 0.28).opacity(0.08), radius: 12, y: 5)
     }
 
+    @ViewBuilder
+    private func largePrimaryGrid(_ snapshot: PixelDashboardSnapshot) -> some View {
+        if shouldPrioritizeCodexQuota(snapshot), let quota = snapshot.codexQuota {
+            VStack(spacing: Layout.cardSpacing) {
+                HStack(spacing: Layout.cardSpacing) {
+                    quotaMetricCard(
+                        "5h 额度",
+                        formatQuotaShort(remaining: quota.fiveHourRemaining, total: quota.fiveHourTotal, isPercentBased: quota.isPercentBased == true),
+                        subtitle: "剩余",
+                        size: .large
+                    )
+                    quotaMetricCard(
+                        "周额度",
+                        formatQuotaShort(remaining: quota.weeklyRemaining, total: quota.weeklyTotal, isPercentBased: quota.isPercentBased == true),
+                        subtitle: "剩余",
+                        size: .large
+                    )
+                }
+            }
+        } else {
+            VStack(spacing: Layout.cardSpacing) {
+                HStack(spacing: Layout.cardSpacing) {
+                    largeMetricCard(
+                        "余额",
+                        formatMoney(snapshot.balance, currency: snapshot.balanceCurrency),
+                        subtitle: "可用",
+                        kind: .balance,
+                        snapshot: snapshot,
+                        icon: "wallet.pass"
+                    )
+                    largeMetricCard(
+                        "今日消费",
+                        formatTodayCost(snapshot),
+                        subtitle: "实际 / 计费",
+                        kind: .todayCost,
+                        snapshot: snapshot,
+                        icon: "chart.line.uptrend.xyaxis"
+                    )
+                }
+
+                HStack(spacing: Layout.cardSpacing) {
+                    largeMetricCard(
+                        "今日 Token",
+                        formatTokens(snapshot.todayTokenTotal),
+                        subtitle: "今日",
+                        kind: .todayToken,
+                        snapshot: snapshot,
+                        icon: "flame"
+                    )
+                    largeMetricCard(
+                        "累计 Token",
+                        formatTokens(snapshot.totalTokenTotal),
+                        subtitle: "累计",
+                        kind: .totalToken,
+                        snapshot: snapshot,
+                        icon: "square.stack.3d.up"
+                    )
+                }
+            }
+        }
+    }
+
+    private func quotaMetricCard(
+        _ title: String,
+        _ value: String,
+        subtitle: String,
+        size: MetricSize
+    ) -> some View {
+        let valueSize: CGFloat = size == .medium ? 24 : 30
+        let minHeight: CGFloat = size == .medium ? 68 : 98
+
+        return VStack(alignment: .leading, spacing: size == .medium ? 2 : 5) {
+            Text(title)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(Palette.label)
+                .lineLimit(1)
+                .widgetAccentable(false)
+
+            Text(value)
+                .font(.system(size: valueSize, weight: .bold, design: .rounded))
+                .foregroundStyle(Palette.teal)
+                .lineLimit(1)
+                .minimumScaleFactor(0.55)
+                .widgetAccentable(false)
+
+            Text(subtitle)
+                .font(.system(size: 11, weight: .regular, design: .rounded))
+                .foregroundStyle(Palette.muted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .widgetAccentable(false)
+        }
+        .padding(size == .medium ? 8 : Layout.cardPadding)
+        .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .leading)
+        .background(Palette.card, in: RoundedRectangle(cornerRadius: Layout.cornerRadiusCard, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: Layout.cornerRadiusCard, style: .continuous)
+                .stroke(Palette.border, lineWidth: 1)
+        )
+        .shadow(color: Color(red: 0.18, green: 0.22, blue: 0.28).opacity(0.08), radius: 12, y: 5)
+    }
+
     private func codexQuotaStrip(_ quota: CodexQuotaSnapshot, compact: Bool) -> some View {
         HStack(spacing: compact ? 8 : 12) {
             quotaPill(
@@ -570,9 +653,36 @@ struct PixelAPIWidgetView: View {
         }
     }
 
+    private func shouldPrioritizeCodexQuota(_ snapshot: PixelDashboardSnapshot) -> Bool {
+        guard snapshot.codexQuota != nil else { return false }
+        let hasPrimaryMetrics = snapshot.balance != nil
+            || snapshot.todayCostPrimary != nil
+            || snapshot.todayTokenTotal != nil
+            || snapshot.totalTokenTotal != nil
+        return !hasPrimaryMetrics
+    }
+
+    private func widgetTitle(for snapshot: PixelDashboardSnapshot) -> String {
+        shouldPrioritizeCodexQuota(snapshot) ? "Codex 额度" : snapshot.providerName
+    }
+
+    private func smallPrimaryValue(_ snapshot: PixelDashboardSnapshot) -> String {
+        guard shouldPrioritizeCodexQuota(snapshot), let quota = snapshot.codexQuota else {
+            return formatMoney(snapshot.balance, currency: snapshot.balanceCurrency)
+        }
+        return formatQuotaShort(
+            remaining: quota.fiveHourRemaining,
+            total: quota.fiveHourTotal,
+            isPercentBased: quota.isPercentBased == true
+        )
+    }
+
     private func statusColor(for snapshot: PixelDashboardSnapshot) -> Color {
         if entry.isStale {
             return .gray
+        }
+        if shouldPrioritizeCodexQuota(snapshot) {
+            return Palette.teal
         }
         switch snapshot.status {
         case .normal:
@@ -603,6 +713,9 @@ struct PixelAPIWidgetView: View {
         if entry.isStale {
             return "缓存"
         }
+        if shouldPrioritizeCodexQuota(snapshot) {
+            return "同步"
+        }
         switch snapshot.status {
         case .normal:
             return "正常"
@@ -622,6 +735,9 @@ struct PixelAPIWidgetView: View {
     private func compactStatusText(for snapshot: PixelDashboardSnapshot) -> String {
         if entry.isStale {
             return "缓存"
+        }
+        if shouldPrioritizeCodexQuota(snapshot) {
+            return "同步"
         }
         switch snapshot.status {
         case .normal:
